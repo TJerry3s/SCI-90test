@@ -1,0 +1,9 @@
+{
+  "name": "sci-90-test",
+  "version": "1.0.0",
+  "description": "SCI-90心理健康评估系统",
+  "scripts": {},
+  "keywords": ["health", "assessment"],
+  "author": "",
+  "license": "MIT"
+}
