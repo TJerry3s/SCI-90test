@@ -1,11 +1,10 @@
 name = "sci-90-test"
 compatibility_date = "2024-01-01"
+account_id = "0946f99e4ffec871f6886abf0fab915b"
+main = "worker/index.js"
 
 # D1 数据库绑定
 [[d1_databases]]
 binding = "DB"
 database_name = "sci-90-test-db"
-database_id = "YOUR_DATABASE_ID"  # 部署后需要替换为实际的 D1 数据库 ID
-
-# Pages 项目配置
-pages_build_output_dir = "/"
+database_id = "e4550992-bd2b-4af0-b321-d879dcd1fbee"

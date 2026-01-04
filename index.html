@@ -1212,8 +1212,29 @@
             };
         }
 
-        // API 基础 URL（开发时使用 localhost，生产环境使用实际域名）
-        const API_BASE = 'https://sci-90-test.8866c4ee-1df1-4287-bc6e-93c7152e26f3.workers.dev';
+        // API 基础 URL（自动检测环境）
+        // 开发环境：localhost
+        // Pages 环境：使用 Workers 自定义域名或从当前域名推断
+        const getApiBaseUrl = () => {
+          const hostname = window.location.hostname;
+
+          // 开发环境
+          if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            return 'http://localhost:8787'; // Workers 本地开发端口
+          }
+
+          // Pages 生产环境 - 尝试使用 Workers 自定义域名
+          // 如果你有自定义的 Workers 域名，在这里替换
+          // 例如：return 'https://api.your-domain.com';
+
+          // 或者使用当前域名 + workers 路径（需要配置 Workers 路由）
+          // return `${window.location.protocol}//${window.location.hostname}`;
+
+          // 默认：使用你的 Workers URL（需要更新为正确的 URL）
+          return 'https://sci-90-test.8866c4ee-1df1-4287-bc6e-93c7152e26f3.workers.dev';
+        };
+
+        const API_BASE = getApiBaseUrl();
 
         // Vue 应用
         const { createApp } = Vue;
