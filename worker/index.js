@@ -6,6 +6,7 @@
  * - GET /api/user/:token - 获取用户信息
  * - POST /api/user/:token/access - 记录首次访问
  * - POST /api/user/:token/save - 保存测试进度
+ * - POST /api/user/:token/complete - 完成测试并保存结果
  * - GET /api/admin/list - 获取所有用户列表（管理员）
  */
 
@@ -44,6 +45,11 @@ export default {
       if (path.startsWith('/api/user/') && path.endsWith('/save') && request.method === 'POST') {
         const token = path.split('/')[3];
         return await saveProgress(token, request, env, corsHeaders);
+      }
+
+      if (path.startsWith('/api/user/') && path.endsWith('/complete') && request.method === 'POST') {
+        const token = path.split('/')[3];
+        return await completeTest(token, request, env, corsHeaders);
       }
 
       if (path === '/api/admin/list' && request.method === 'GET') {
@@ -238,6 +244,45 @@ async function getAdminList(request, env, corsHeaders) {
   const results = await stmt.all();
 
   return new Response(JSON.stringify({ success: true, data: results.results }), {
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
+}
+
+/**
+ * API: 完成测试并保存结果
+ * POST /api/user/:token/complete
+ * Body: { result, deviceId }
+ */
+async function completeTest(token, request, env, corsHeaders) {
+  const { result, deviceId } = await request.json();
+
+  // 验证设备
+  const stmt = env.DB.prepare(
+    'SELECT device_id FROM users WHERE token = ?'
+  );
+  const user = await stmt.bind(token).first();
+
+  if (!user) {
+    return new Response(JSON.stringify({ error: 'Token not found' }), {
+      status: 404,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  if (user.DEVICE_ID !== deviceId) {
+    return new Response(JSON.stringify({ error: 'Unauthorized device' }), {
+      status: 403,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+
+  // 更新状态为已完成，保存结果
+  const updateStmt = env.DB.prepare(
+    'UPDATE users SET status = ?, progress = 90, result = ?, completed_at = CURRENT_TIMESTAMP WHERE token = ?'
+  );
+  await updateStmt.bind('completed', JSON.stringify(result), token).run();
+
+  return new Response(JSON.stringify({ success: true }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
 }
