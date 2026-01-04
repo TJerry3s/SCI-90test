@@ -105,7 +105,7 @@ async function createToken(request, env, corsHeaders) {
   return new Response(JSON.stringify({
     success: true,
     token,
-    url: `${urlOrigin(request)}/?token=${token}`,
+    url: `https://sci-90test.pages.dev/?token=${token}`,
   }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });
