@@ -161,7 +161,7 @@ async function recordAccess(token, request, env, corsHeaders) {
   }
 
   // 如果已有设备绑定，检查是否匹配
-  if (user.DEVICE_ID && user.DEVICE_ID !== deviceId) {
+  if (user.device_id && user.device_id !== deviceId) {
     return new Response(JSON.stringify({
       error: '此链接已在其他设备使用，请联系客服',
       code: 'DEVICE_MISMATCH'
@@ -172,7 +172,7 @@ async function recordAccess(token, request, env, corsHeaders) {
   }
 
   // 首次访问，绑定设备
-  if (!user.DEVICE_ID) {
+  if (!user.device_id) {
     const updateStmt = env.DB.prepare(
       'UPDATE users SET device_id = ?, first_access_at = CURRENT_TIMESTAMP, status = ? WHERE token = ?'
     );
@@ -205,7 +205,7 @@ async function saveProgress(token, request, env, corsHeaders) {
     });
   }
 
-  if (user.DEVICE_ID !== deviceId) {
+  if (user.device_id !== deviceId) {
     return new Response(JSON.stringify({ error: 'Unauthorized device' }), {
       status: 403,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -269,7 +269,7 @@ async function completeTest(token, request, env, corsHeaders) {
     });
   }
 
-  if (user.DEVICE_ID !== deviceId) {
+  if (user.device_id !== deviceId) {
     return new Response(JSON.stringify({ error: 'Unauthorized device' }), {
       status: 403,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
