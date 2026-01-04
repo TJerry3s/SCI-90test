@@ -239,7 +239,7 @@ async function getAdminList(request, env, corsHeaders) {
   }
 
   const stmt = env.DB.prepare(
-    'SELECT token, order_id, note, status, created_at, first_access_at, progress FROM users ORDER BY created_at DESC'
+    'SELECT token, order_id, note, status, created_at, first_access_at, completed_at, progress FROM users ORDER BY created_at DESC'
   );
   const results = await stmt.all();
 

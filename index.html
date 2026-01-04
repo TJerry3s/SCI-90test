@@ -809,9 +809,20 @@
                                 <span v-if="user.first_access_at" style="margin-left: 10px;">
                                     首次访问：{{ formatDate(user.first_access_at) }}
                                 </span>
+                                <span v-if="user.completed_at" style="margin-left: 10px;">
+                                    完成时间：{{ formatDate(user.completed_at) }}
+                                </span>
                             </div>
                             <div v-if="user.progress > 0" style="margin-top: 8px;">
                                 进度：{{ user.progress }}/90
+                            </div>
+                            <div style="margin-top: 10px; padding: 8px; background: #fff; border-radius: 4px; font-size: 11px; word-break: break-all; display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: #667eea; flex: 1; margin-right: 10px;">
+                                    {{ `${window.location.origin}/?token=${user.token}` }}
+                                </span>
+                                <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 11px;" @click="copyLink(`${window.location.origin}/?token=${user.token}`)">
+                                    复制
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1471,7 +1482,7 @@
                     // 如果是 token 用户，保存结果到云端
                     if (this.isTokenUser) {
                         try {
-                            await fetch(`${API_BASE}/api/user/${this.token}/complete`, {
+                            const response = await fetch(`${API_BASE}/api/user/${this.token}/complete`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
@@ -1479,8 +1490,13 @@
                                     deviceId: this.deviceId
                                 })
                             });
+                            const data = await response.json();
+                            if (!data.success) {
+                                alert('保存结果失败：' + (data.error || '未知错误'));
+                            }
                         } catch (err) {
                             console.error('Save result error:', err);
+                            alert('保存结果失败，请检查网络连接');
                         }
                     }
                 },
