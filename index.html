@@ -6,6 +6,50 @@
     <meta name="description" content="心愈测——专业的SCI-90心理健康评估系统">
     <title>心愈测 - SCI-90心理健康评估系统</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <!-- 设备指纹生成脚本 -->
+    <script>
+        // 生成简单的设备指纹
+        function generateDeviceId() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillText('Device Fingerprint', 2, 2);
+            const canvasFingerprint = canvas.toDataURL();
+
+            const components = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                new Date().getTimezoneOffset(),
+                canvasFingerprint,
+                navigator.platform,
+                navigator.hardwareConcurrency || 1
+            ];
+
+            // 简单的哈希函数
+            let hash = 0;
+            const data = components.join('|');
+            for (let i = 0; i < data.length; i++) {
+                const char = data.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return 'device_' + Math.abs(hash).toString(16) + '_' + Date.now().toString(36);
+        }
+
+        // 获取或生成设备ID
+        function getDeviceId() {
+            let deviceId = localStorage.getItem('sci90_device_id');
+            if (!deviceId) {
+                deviceId = generateDeviceId();
+                localStorage.setItem('sci90_device_id', deviceId);
+            }
+            return deviceId;
+        }
+    </script>
+
     <style>
         * {
             margin: 0;
@@ -104,6 +148,99 @@
 
         .btn-secondary {
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-small {
+            padding: 8px 20px;
+            font-size: 14px;
+            margin: 5px;
+        }
+
+        /* 管理后台样式 */
+        .admin-page {
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .link-result {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .link-result-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .link-result-url {
+            font-size: 12px;
+            color: #666;
+            word-break: break-all;
+            margin: 8px 0;
+        }
+
+        .user-list {
+            margin-top: 20px;
+        }
+
+        .user-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-testing {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
         }
 
         /* 测试页面样式 */
@@ -450,6 +587,31 @@
             border-top: 1px solid #e0e0e0;
         }
 
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 4px solid #f39c12;
+            color: #856404;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-left: 4px solid #e74c3c;
+            color: #721c24;
+        }
+
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
         /* 响应式设计 */
         @media (max-width: 768px) {
             body {
@@ -508,11 +670,28 @@
 <body>
     <div id="app">
         <div class="container">
+            <!-- 加载中 -->
+            <div v-if="loading" class="loading">
+                <p>加载中...</p>
+            </div>
+
+            <!-- 错误提示 -->
+            <div v-else-if="error" class="alert alert-danger">
+                <h3>⚠️ {{ error }}</h3>
+                <p>{{ errorDetail }}</p>
+            </div>
+
             <!-- 首页 -->
-            <div v-if="currentPage === 'home'" class="home-page">
+            <div v-else-if="currentPage === 'home'" class="home-page">
                 <div class="logo">💚</div>
                 <h1>心愈测</h1>
                 <p class="subtitle">SCI-90 心理健康评估系统</p>
+
+                <div v-if="isTokenUser" class="alert alert-warning">
+                    <h3>👋 欢迎使用</h3>
+                    <p>这是您的专属测试链接，请在安静环境完成测试</p>
+                    <p>预计需要 15-20 分钟</p>
+                </div>
 
                 <div class="info-card">
                     <h3>📋 测试说明</h3>
@@ -521,21 +700,127 @@
                         <li>请根据您<strong>最近一周</strong>的实际感受作答</li>
                         <li>每题有 5 个选项，选择最符合您情况的选项</li>
                         <li>测试结果仅供参考，如需专业诊断请咨询心理医生</li>
+                        <li v-if="isTokenUser">测试进度会自动保存，可随时继续</li>
                     </ul>
                 </div>
 
                 <div class="info-card">
                     <h3>🔒 隐私保护</h3>
                     <ul>
-                        <li>您的测试数据仅保存在本地浏览器中</li>
+                        <li v-if="isTokenUser">您的测试数据已加密保存在云端</li>
+                        <li v-else>您的测试数据仅保存在本地浏览器中</li>
                         <li>我们不会收集或上传您的个人信息</li>
-                        <li>您的专属链接永久有效，可随时查看报告</li>
                     </ul>
                 </div>
 
                 <button class="btn" @click="startTest">
-                    开始测试
+                    {{ isTokenUser ? '开始测试' : '开始免费测试' }}
                 </button>
+
+                <!-- 管理员入口 -->
+                <div v-if="!isTokenUser" style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                    <button class="btn btn-secondary btn-small" @click="showAdminLogin = true">
+                        🔐 管理员入口
+                    </button>
+                </div>
+
+                <!-- 管理员登录 -->
+                <div v-if="showAdminLogin" class="info-card" style="margin-top: 20px;">
+                    <h3>管理员登录</h3>
+                    <div class="form-group">
+                        <input
+                            type="password"
+                            v-model="adminPassword"
+                            placeholder="请输入管理员密码"
+                            @keyup.enter="adminLogin"
+                        >
+                    </div>
+                    <button class="btn" @click="adminLogin">登录</button>
+                    <button class="btn btn-secondary" @click="showAdminLogin = false">取消</button>
+                </div>
+            </div>
+
+            <!-- 管理后台 -->
+            <div v-else-if="currentPage === 'admin'" class="admin-page">
+                <h2>🔧 管理后台</h2>
+                <p style="color: #666; margin-bottom: 20px;">生成用户专属测试链接</p>
+
+                <!-- 创建链接 -->
+                <div class="info-card">
+                    <h3>📤 创建新链接</h3>
+                    <div class="form-group">
+                        <label>订单号</label>
+                        <input
+                            type="text"
+                            v-model="newLink.orderId"
+                            placeholder="例如：XHS20240104001"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label>备注（可选）</label>
+                        <input
+                            type="text"
+                            v-model="newLink.note"
+                            placeholder="例如：张三 - 小红书订单"
+                        >
+                    </div>
+                    <button class="btn" @click="createToken" :disabled="creating">
+                        {{ creating ? '生成中...' : '生成专属链接' }}
+                    </button>
+                </div>
+
+                <!-- 生成结果 -->
+                <div v-if="createdLink" class="link-result">
+                    <h3>✅ 链接已生成！</h3>
+                    <div class="link-result-item">
+                        <p><strong>订单号：</strong>{{ createdLink.orderId }}</p>
+                        <p><strong>备注：</strong>{{ createdLink.note || '无' }}</p>
+                        <div class="link-result-url">{{ createdLink.url }}</div>
+                        <button class="btn btn-small" @click="copyLink(createdLink.url)">📋 复制链接</button>
+                    </div>
+                </div>
+
+                <!-- 用户列表 -->
+                <div class="info-card">
+                    <h3>📋 用户列表</h3>
+                    <button class="btn btn-secondary btn-small" @click="loadUserList" :disabled="loadingList">
+                        {{ loadingList ? '加载中...' : '刷新列表' }}
+                    </button>
+
+                    <div v-if="loadingList" class="loading">加载中...</div>
+
+                    <div v-else-if="userList.length === 0" style="color: #999; text-align: center; padding: 20px;">
+                        暂无用户
+                    </div>
+
+                    <div v-else class="user-list">
+                        <div v-for="user in userList" :key="user.token" class="user-item">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <div>
+                                    <strong>订单：{{ user.order_id }}</strong>
+                                    <span v-if="user.note" style="color: #666; margin-left: 10px;">{{ user.note }}</span>
+                                </div>
+                                <span class="status-badge" :class="'status-' + user.status">
+                                    {{ statusText(user.status) }}
+                                </span>
+                            </div>
+                            <div style="font-size: 12px; color: #666;">
+                                创建时间：{{ formatDate(user.created_at) }}
+                                <span v-if="user.first_access_at" style="margin-left: 10px;">
+                                    首次访问：{{ formatDate(user.first_access_at) }}
+                                </span>
+                            </div>
+                            <div v-if="user.progress > 0" style="margin-top: 8px;">
+                                进度：{{ user.progress }}/90
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 返回按钮 -->
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn btn-secondary" @click="currentPage = 'home'">返回首页</button>
+                </div>
             </div>
 
             <!-- 测试页面 -->
@@ -581,9 +866,9 @@
                     <button
                         class="btn"
                         @click="nextQuestion"
-                        :disabled="!answers[currentQuestionIndex]"
+                        :disabled="!answers[currentQuestionIndex] || saving"
                     >
-                        {{ currentQuestionIndex === 89 ? '提交测试' : '下一题' }}
+                        {{ saving ? '保存中...' : (currentQuestionIndex === 89 ? '提交测试' : '下一题') }}
                     </button>
                 </div>
             </div>
@@ -598,6 +883,9 @@
                         {{ result.riskLevel.level }}困扰
                     </div>
                     <h2>{{ result.riskLevel.description }}</h2>
+                    <p v-if="isTokenUser" style="color: #999; font-size: 14px; margin-top: 10px;">
+                        测试时间：{{ formatResultTime(result.timestamp) }}
+                    </p>
                 </div>
 
                 <div class="score-grid">
@@ -690,22 +978,28 @@
                 </div>
 
                 <div class="share-section">
-                    <h3>📤 您的专属测试链接</h3>
-                    <p style="color: #666; margin-bottom: 20px;">
+                    <h3 v-if="isTokenUser">📤 您的专属测试报告</h3>
+                    <h3 v-else>📤 您的专属测试链接</h3>
+
+                    <p v-if="isTokenUser" style="color: #666; margin-bottom: 20px;">
+                        这是您的测试报告，可随时查看
+                    </p>
+                    <p v-else style="color: #666; margin-bottom: 20px;">
                         这是您的专属链接，保存后可随时查看报告
                     </p>
+
                     <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; word-break: break-all; font-size: 12px; color: #666;">
                         {{ currentUrl }}
                     </div>
-                    <button class="btn" @click="copyLink">
+
+                    <button v-if="!isTokenUser" class="btn" @click="copyLink(currentUrl)">
                         {{ linkCopied ? '✓ 链接已复制！' : '📋 复制专属链接' }}
                     </button>
-                    <div style="margin-top: 20px;">
-                        <button class="btn btn-secondary" @click="restartTest">
-                            重新测试
-                        </button>
-                    </div>
-                    <p style="color: #999; font-size: 12px; margin-top: 15px;">
+
+                    <p v-if="isTokenUser" style="color: #999; font-size: 12px; margin-top: 15px;">
+                        💡 提示：本链接已完成测试，仅供查看报告
+                    </p>
+                    <p v-else style="color: #999; font-size: 12px; margin-top: 15px;">
                         💡 提示：点击此链接将直接显示您的测试报告
                     </p>
                 </div>
@@ -918,38 +1212,8 @@
             };
         }
 
-        // 生成分享链接
-        function generateShareLink(result) {
-            const baseUrl = window.location.origin + window.location.pathname;
-            const encodedData = btoa(JSON.stringify(result));
-            return `${baseUrl}#result=${encodedData}`;
-        }
-
-        // 生成唯一用户ID
-        function generateUserId() {
-            return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        }
-
-        // 从URL获取用户ID
-        function getUserIdFromURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('userId');
-        }
-
-        // 从URL解析测试结果
-        function parseResultFromURL() {
-            const hash = window.location.hash;
-            if (hash && hash.startsWith('#result=')) {
-                try {
-                    const encodedData = hash.substring(8);
-                    return JSON.parse(atob(encodedData));
-                } catch (e) {
-                    console.error('Failed to parse result from URL:', e);
-                    return null;
-                }
-            }
-            return null;
-        }
+        // API 基础 URL（开发时使用 localhost，生产环境使用实际域名）
+        const API_BASE = window.location.origin;
 
         // Vue 应用
         const { createApp } = Vue;
@@ -957,14 +1221,41 @@
         createApp({
             data() {
                 return {
-                    currentPage: 'home',
+                    loading: false,
+                    error: null,
+                    errorDetail: '',
+
+                    // 页面状态
+                    currentPage: 'home', // home, test, result, admin
+
+                    // Token 系统
+                    token: null,
+                    isTokenUser: false,
+                    deviceId: null,
+
+                    // 测试数据
                     questions: questionsData,
                     answerOptions: answerOptionsData,
                     answers: new Array(90).fill(null),
                     currentQuestionIndex: 0,
                     result: null,
+
+                    // 管理后台
+                    adminPassword: '',
+                    showAdminLogin: false,
+                    newLink: {
+                        orderId: '',
+                        note: ''
+                    },
+                    creating: false,
+                    createdLink: null,
+                    userList: [],
+                    loadingList: false,
                     linkCopied: false,
-                    userId: null
+
+                    // 保存状态
+                    saving: false,
+                    lastSaveIndex: -1
                 };
             },
             computed: {
@@ -979,56 +1270,155 @@
                     return window.location.href;
                 }
             },
-            mounted() {
-                // 获取或生成用户ID
-                let userId = getUserIdFromURL();
+            async mounted() {
+                // 获取设备 ID
+                this.deviceId = getDeviceId();
 
-                // 如果URL中有userId，从localStorage读取结果
-                if (userId) {
-                    this.userId = userId;
-                    const savedResult = localStorage.getItem('sci90_result_' + userId);
-                    if (savedResult) {
-                        try {
-                            this.result = JSON.parse(savedResult);
-                            this.currentPage = 'result';
-                            return;
-                        } catch (e) {
-                            console.error('Failed to load saved result:', e);
-                        }
-                    }
-                }
+                // 检查 URL 中是否有 token
+                const urlParams = new URLSearchParams(window.location.search);
+                this.token = urlParams.get('token');
 
-                // 检查URL中是否有结果数据（向后兼容）
-                const urlResult = parseResultFromURL();
-                if (urlResult) {
-                    this.result = urlResult;
-                    this.currentPage = 'result';
+                if (this.token) {
+                    await this.initTokenUser();
                 }
             },
             methods: {
-                startTest() {
-                    // 生成新的用户ID
-                    this.userId = generateUserId();
+                // 初始化 Token 用户
+                async initTokenUser() {
+                    this.loading = true;
+                    this.isTokenUser = true;
 
-                    // 更新URL（不刷新页面）
-                    const newUrl = window.location.pathname + '?userId=' + this.userId;
-                    window.history.replaceState({}, '', newUrl);
+                    try {
+                        // 获取用户信息
+                        const response = await fetch(`${API_BASE}/api/user/${this.token}`);
+                        const data = await response.json();
 
-                    this.currentPage = 'test';
-                    this.answers = new Array(90).fill(null);
-                    this.currentQuestionIndex = 0;
+                        if (!data.success) {
+                            this.error = '链接无效';
+                            this.errorDetail = '此测试链接不存在或已过期';
+                            return;
+                        }
+
+                        const user = data.data;
+
+                        // 检查状态
+                        if (user.status === 'completed') {
+                            // 已完成，直接显示结果
+                            if (user.result) {
+                                this.result = JSON.parse(user.result);
+                                this.currentPage = 'result';
+                            } else {
+                                this.error = '测试数据丢失';
+                                this.errorDetail = '请联系客服重新生成测试链接';
+                            }
+                            return;
+                        }
+
+                        // 记录首次访问
+                        if (!user.device_id) {
+                            await this.recordFirstAccess();
+                        } else if (user.device_id !== this.deviceId) {
+                            this.error = '设备验证失败';
+                            this.errorDetail = '此链接已在其他设备使用，请联系客服';
+                            return;
+                        }
+
+                        // 如果有测试进度，恢复进度
+                        if (user.answers) {
+                            try {
+                                this.answers = JSON.parse(user.answers);
+                                // 找到第一个未回答的题目
+                                const firstUnanswered = this.answers.findIndex(a => a === null);
+                                if (firstUnanswered !== -1 && firstUnanswered < 89) {
+                                    this.currentQuestionIndex = firstUnanswered;
+                                }
+                            } catch (e) {
+                                console.error('Failed to parse answers:', e);
+                            }
+                        }
+
+                    } catch (err) {
+                        console.error('Init token user error:', err);
+                        // 如果 API 调用失败（可能还没部署后端），降级为本地模式
+                        this.isTokenUser = false;
+                    } finally {
+                        this.loading = false;
+                    }
                 },
-                selectAnswer(value) {
+
+                // 记录首次访问
+                async recordFirstAccess() {
+                    try {
+                        await fetch(`${API_BASE}/api/user/${this.token}/access`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ deviceId: this.deviceId })
+                        });
+                    } catch (err) {
+                        console.error('Record access error:', err);
+                    }
+                },
+
+                // 开始测试
+                async startTest() {
+                    this.currentPage = 'test';
+                    if (!this.isTokenUser) {
+                        this.answers = new Array(90).fill(null);
+                        this.currentQuestionIndex = 0;
+                    }
+                },
+
+                // 选择答案
+                async selectAnswer(value) {
                     this.answers[this.currentQuestionIndex] = value;
+
+                    // 自动保存（如果是 token 用户）
+                    if (this.isTokenUser) {
+                        await this.saveProgress();
+                    }
+
+                    // 延迟后自动跳转
                     setTimeout(() => {
                         if (this.currentQuestionIndex < 89) {
                             this.nextQuestion();
                         }
                     }, 300);
                 },
+
+                // 保存进度
+                async saveProgress() {
+                    if (!this.isTokenUser) return;
+
+                    // 避免频繁保存
+                    if (this.saving) return;
+
+                    this.saving = true;
+                    try {
+                        const progress = this.answers.filter(a => a !== null).length;
+
+                        await fetch(`${API_BASE}/api/user/${this.token}/save`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                progress,
+                                answers: this.answers,
+                                deviceId: this.deviceId
+                            })
+                        });
+
+                        this.lastSaveIndex = this.currentQuestionIndex;
+                    } catch (err) {
+                        console.error('Save progress error:', err);
+                    } finally {
+                        this.saving = false;
+                    }
+                },
+
+                // 下一题
                 nextQuestion() {
                     if (this.currentQuestionIndex < 89) {
                         this.currentQuestionIndex++;
+                        // 跳过已回答的题目
                         while (this.currentQuestionIndex < 89 && this.answers[this.currentQuestionIndex] !== null) {
                             this.currentQuestionIndex++;
                         }
@@ -1037,13 +1427,17 @@
                     }
                     window.scrollTo(0, 0);
                 },
+
+                // 上一题
                 previousQuestion() {
                     if (this.currentQuestionIndex > 0) {
                         this.currentQuestionIndex--;
                         window.scrollTo(0, 0);
                     }
                 },
-                submitTest() {
+
+                // 提交测试
+                async submitTest() {
                     if (this.answers.some(a => a === null)) {
                         alert('请完成所有题目后再提交');
                         return;
@@ -1053,20 +1447,138 @@
                     this.result = calculateResult(this.answers);
                     this.currentPage = 'result';
 
-                    // 保存结果到localStorage（使用userId作为key）
-                    if (this.userId) {
-                        localStorage.setItem('sci90_result_' + this.userId, JSON.stringify(this.result));
+                    // 如果是 token 用户，保存结果到云端
+                    if (this.isTokenUser) {
+                        try {
+                            await fetch(`${API_BASE}/api/user/${this.token}/complete`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    result: this.result,
+                                    deviceId: this.deviceId
+                                })
+                            });
+                        } catch (err) {
+                            console.error('Save result error:', err);
+                        }
+                    }
+                },
+
+                // 管理员登录
+                adminLogin() {
+                    if (this.adminPassword === 'admin123') {
+                        this.currentPage = 'admin';
+                        this.showAdminLogin = false;
+                        this.loadUserList();
+                    } else {
+                        alert('密码错误');
+                    }
+                },
+
+                // 创建 Token
+                async createToken() {
+                    if (!this.newLink.orderId) {
+                        alert('请输入订单号');
+                        return;
                     }
 
-                    // 生成分享链接（包含userId）
-                    const shareLink = window.location.origin + window.location.pathname + '?userId=' + this.userId;
-                    window.history.pushState(null, '', shareLink);
+                    this.creating = true;
+                    try {
+                        const response = await fetch(`${API_BASE}/api/create`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                orderId: this.newLink.orderId,
+                                note: this.newLink.note,
+                                adminPassword: 'admin123'
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            this.createdLink = {
+                                orderId: this.newLink.orderId,
+                                note: this.newLink.note,
+                                url: data.url,
+                                token: data.token
+                            };
+                            this.newLink.orderId = '';
+                            this.newLink.note = '';
+                            // 刷新列表
+                            this.loadUserList();
+                        } else {
+                            alert('创建失败：' + data.error);
+                        }
+                    } catch (err) {
+                        console.error('Create token error:', err);
+                        alert('创建失败，请检查网络连接');
+                    } finally {
+                        this.creating = false;
+                    }
                 },
+
+                // 加载用户列表
+                async loadUserList() {
+                    this.loadingList = true;
+                    try {
+                        const response = await fetch(`${API_BASE}/api/admin/list?adminPassword=admin123`);
+                        const data = await response.json();
+
+                        if (data.success) {
+                            this.userList = data.data;
+                        }
+                    } catch (err) {
+                        console.error('Load user list error:', err);
+                        alert('加载失败，请检查网络连接');
+                    } finally {
+                        this.loadingList = false;
+                    }
+                },
+
+                // 复制链接
+                copyLink(url) {
+                    navigator.clipboard.writeText(url).then(() => {
+                        this.linkCopied = true;
+                        setTimeout(() => {
+                            this.linkCopied = false;
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy link:', err);
+                        alert('复制失败，请手动复制链接');
+                    });
+                },
+
+                // 状态文本
+                statusText(status) {
+                    const statusMap = {
+                        'pending': '未开始',
+                        'testing': '测试中',
+                        'completed': '已完成'
+                    };
+                    return statusMap[status] || status;
+                },
+
+                // 格式化日期
+                formatDate(dateStr) {
+                    if (!dateStr) return '';
+                    const date = new Date(dateStr);
+                    return date.toLocaleString('zh-CN');
+                },
+
+                // 格式化结果时间
+                formatResultTime(timestamp) {
+                    if (!timestamp) return '';
+                    const date = new Date(timestamp);
+                    return date.toLocaleString('zh-CN');
+                },
+
                 getFactorStatus(score) {
                     if (score >= 3) return 'warning';
                     if (score >= 2) return 'attention';
                     return 'normal';
                 },
+
                 getFactorDescription(factorName) {
                     const descriptions = {
                         躯体化: '反映主观的身体不适感，包括心血管、胃肠道、呼吸系统等方面的不适。',
@@ -1081,6 +1593,7 @@
                     };
                     return descriptions[factorName] || '';
                 },
+
                 getFactorSuggestions(factorName) {
                     const suggestions = {
                         躯体化: ['尝试放松训练，如深呼吸、冥想', '保持规律的运动', '如症状持续，建议进行身体检查'],
@@ -1094,32 +1607,6 @@
                         精神病性: ['保持规律的作息', '避免使用精神活性物质', '建议寻求专业精神科医生的帮助']
                     };
                     return suggestions[factorName] || ['保持良好的生活习惯', '必要时寻求专业帮助'];
-                },
-                copyLink() {
-                    // 生成完整的分享链接
-                    const link = window.location.href;
-                    navigator.clipboard.writeText(link).then(() => {
-                        this.linkCopied = true;
-                        setTimeout(() => {
-                            this.linkCopied = false;
-                        }, 2000);
-                    }).catch(err => {
-                        console.error('Failed to copy link:', err);
-                        alert('复制失败，请手动复制链接');
-                    });
-                },
-                restartTest() {
-                    if (confirm('确定要重新开始测试吗？')) {
-                        // 生成新的用户ID
-                        this.userId = generateUserId();
-                        const newUrl = window.location.pathname + '?userId=' + this.userId;
-
-                        this.answers = new Array(90).fill(null);
-                        this.currentQuestionIndex = 0;
-                        this.result = null;
-                        this.currentPage = 'home';
-                        window.history.pushState(null, '', newUrl);
-                    }
                 }
             }
         }).mount('#app');

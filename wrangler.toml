@@ -1,0 +1,11 @@
+name = "sci-90-test"
+compatibility_date = "2024-01-01"
+
+# D1 数据库绑定
+[[d1_databases]]
+binding = "DB"
+database_name = "sci-90-test-db"
+database_id = "YOUR_DATABASE_ID"  # 部署后需要替换为实际的 D1 数据库 ID
+
+# Pages 项目配置
+pages_build_output_dir = "/"
