@@ -818,9 +818,9 @@
                             </div>
                             <div style="margin-top: 10px; padding: 8px; background: #fff; border-radius: 4px; font-size: 11px; word-break: break-all; display: flex; justify-content: space-between; align-items: center;">
                                 <span style="color: #667eea; flex: 1; margin-right: 10px;">
-                                    {{ `${window.location.origin}/?token=${user.token}` }}
+                                    {{ `${origin}/?token=${user.token}` }}
                                 </span>
-                                <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 11px;" @click="copyLink(`${window.location.origin}/?token=${user.token}`)">
+                                <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 11px;" @click="copyLink(`${origin}/?token=${user.token}`)">
                                     复制
                                 </button>
                             </div>
@@ -1256,6 +1256,7 @@
                     loading: false,
                     error: null,
                     errorDetail: '',
+                    origin: window.location.origin,
 
                     // 页面状态
                     currentPage: 'home', // home, test, result, admin
