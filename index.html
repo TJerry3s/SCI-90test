@@ -351,9 +351,32 @@
             padding: 20px 0;
         }
 
+        /* 顶部标题区 */
         .result-header {
             text-align: center;
             margin-bottom: 30px;
+            position: relative;
+        }
+
+        .result-header-note {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .result-main-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .result-subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
         }
 
         .risk-badge {
@@ -364,6 +387,348 @@
             font-weight: bold;
             color: white;
             margin-bottom: 20px;
+        }
+
+        /* 主要结果摘要区表格 */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        .summary-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .summary-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .summary-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-range-positive {
+            color: #D32F2F;
+            font-size: 20px;
+        }
+
+        .data-range-normal {
+            color: #4CAF50;
+            font-size: 20px;
+        }
+
+        /* 因子明细表 */
+        .factor-detail-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+
+        .factor-detail-table th {
+            background: #f5f5f5;
+            color: #333;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .factor-detail-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        .factor-detail-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .factor-reference-severe {
+            color: #D32F2F;
+            font-weight: bold;
+        }
+
+        .factor-reference-moderate {
+            color: #FF9800;
+            font-weight: bold;
+        }
+
+        .factor-reference-normal {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        /* 详细数据可视化区 */
+        .detail-data-section {
+            margin: 30px 0;
+        }
+
+        .detail-data-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .visualization-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .score-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .score-value {
+            font-size: 48px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .score-level {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .score-level-severe {
+            background: #D32F2F;
+        }
+
+        .score-level-moderate {
+            background: #FF9800;
+        }
+
+        .score-level-mild {
+            background: #FFC107;
+        }
+
+        .score-level-normal {
+            background: #4CAF50;
+        }
+
+        /* 渐变进度条 */
+        .gradient-progress-container {
+            margin: 20px 0;
+        }
+
+        .gradient-progress-bar {
+            height: 40px;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .progress-segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            position: relative;
+        }
+
+        .segment-normal {
+            background: linear-gradient(90deg, #4CAF50 0%, #66BB6A 100%);
+        }
+
+        .segment-mild {
+            background: linear-gradient(90deg, #FFC107 0%, #FFD54F 100%);
+        }
+
+        .segment-moderate {
+            background: linear-gradient(90deg, #FF9800 0%, #FFB74D 100%);
+        }
+
+        .segment-severe {
+            background: linear-gradient(90deg, #D32F2F 0%, #E53935 100%);
+        }
+
+        .score-indicator {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .score-indicator-marker {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 15px solid #1a1a1a;
+        }
+
+        .score-indicator-dot {
+            width: 16px;
+            height: 16px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            margin-top: -2px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .progress-legend {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        /* 环形进度图 */
+        .circular-progress-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .circular-progress {
+            width: 200px;
+            height: 200px;
+            position: relative;
+        }
+
+        .circular-progress svg {
+            transform: rotate(-90deg);
+        }
+
+        .circular-progress-bg {
+            fill: none;
+            stroke: #e0e0e0;
+            stroke-width: 12;
+        }
+
+        .circular-progress-bar {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s;
+        }
+
+        .circular-progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .circular-progress-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .circular-progress-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* 说明文本 */
+        .interpretation-text {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* 因子详细分析 */
+        .factor-detail-analysis {
+            margin: 20px 0;
+        }
+
+        .factor-analysis-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+
+        .factor-analysis-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+
+        .factor-analysis-scores {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .factor-analysis-severity {
+            color: #D32F2F;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .factor-analysis-description {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
         }
 
         .score-grid {
@@ -912,98 +1277,234 @@
 
             <!-- 结果页面 -->
             <div v-else-if="currentPage === 'result'" class="result-page">
+                <!-- 1. 顶部标题区 -->
                 <div class="result-header">
-                    <div
-                        class="risk-badge"
-                        :style="{background: result.riskLevel.color}"
-                    >
-                        {{ result.riskLevel.level }}困扰
-                    </div>
-                    <h2>{{ result.riskLevel.description }}</h2>
+                    <div class="result-header-note">注:根据测试结果,随时可找回报告</div>
+                    <h1 class="result-main-title">SCL-90 症状自评量表测试结果</h1>
+                    <p class="result-subtitle">总评分结果报告</p>
                     <p v-if="isTokenUser" style="color: #999; font-size: 14px; margin-top: 10px;">
                         测试时间：{{ formatResultTime(result.timestamp) }}
                     </p>
                 </div>
 
-                <div class="score-grid">
-                    <div class="score-card">
-                        <div class="score-card-value">{{ result.totalScore }}</div>
-                        <div class="score-card-label">总分</div>
-                    </div>
-                    <div class="score-card">
-                        <div class="score-card-value">{{ result.totalAverage.toFixed(2) }}</div>
-                        <div class="score-card-label">总均分</div>
-                    </div>
-                    <div class="score-card">
-                        <div class="score-card-value">{{ result.positiveItems }}</div>
-                        <div class="score-card-label">阳性项目数</div>
-                    </div>
+                <!-- 2. 主要结果摘要区表格 -->
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>总评分</th>
+                            <th>平均分</th>
+                            <th>阳性项目数</th>
+                            <th>数据范围</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ result.totalScore }}</td>
+                            <td>{{ result.totalAverage.toFixed(2) }}</td>
+                            <td>{{ result.positiveItems }}</td>
+                            <td>
+                                <span :class="result.positiveItems > 43 ? 'data-range-positive' : 'data-range-normal'">
+                                    {{ result.positiveItems > 43 ? '阳性' : '正常' }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 3. 因子分明细区表格 -->
+                <h3 style="text-align: center; color: #333; font-size: 18px; margin: 30px 0 20px;">因子分明细</h3>
+                <table class="factor-detail-table">
+                    <thead>
+                        <tr>
+                            <th>因子</th>
+                            <th>总分</th>
+                            <th>平均分</th>
+                            <th>参考结果</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(factor, name) in result.factors" :key="name">
+                            <td style="text-align: left; padding-left: 20px;">{{ name }}</td>
+                            <td>{{ factor.score }}</td>
+                            <td>{{ factor.average.toFixed(2) }}</td>
+                            <td>
+                                <span :class="getFactorReferenceClass(factor.average)">
+                                    {{ getFactorReferenceText(factor.average) }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 说明部分 -->
+                <div class="interpretation-text" style="margin: 20px 0;">
+                    <strong>说明：</strong>
+                    <p style="margin-top: 10px;">
+                        您的总分为 {{ result.totalScore }} 分，{{ getTotalScoreInterpretation(result.totalScore) }}
+                    </p>
                 </div>
 
-                <div class="advice-section">
-                    <h3>💡 综合建议</h3>
-                    <p>{{ result.riskLevel.advice }}</p>
-                </div>
+                <!-- 4. 详细数据可视化区 -->
+                <div class="detail-data-section">
+                    <h3 class="detail-data-title">详细数据</h3>
 
-                <div class="factor-section">
-                    <h3>📊 各维度分析</h3>
-
-                    <!-- 详细文字说明 -->
-                    <div
-                        v-for="(factor, name) in result.factors"
-                        :key="name"
-                        class="factor-item"
-                    >
-                        <div class="factor-header">
-                            <span class="factor-name">{{ name }}</span>
-                            <span class="factor-score" :class="getFactorStatus(factor.average)">
-                                {{ factor.average.toFixed(2) }} 分
-                            </span>
-                        </div>
-
-                        <!-- 分数水平可视化条 -->
-                        <div class="score-bar-container">
-                            <div class="score-bar-label">
-                                <span>健康水平</span>
-                                <span>您的位置：{{ factor.average.toFixed(2) }}分</span>
-                            </div>
-                            <div class="score-bar">
-                                <div class="score-bar-segment normal" style="width: 40%;">0-2分</div>
-                                <div class="score-bar-segment mild" style="width: 20%;">2-3分</div>
-                                <div class="score-bar-segment moderate" style="width: 20%;">3-4分</div>
-                                <div class="score-bar-segment severe" style="width: 20%;">4-5分</div>
-                                <div
-                                    class="score-indicator"
-                                    :style="{left: (factor.average / 5 * 100) + '%'}"
-                                >
-                                    <div class="score-indicator-label">{{ factor.average.toFixed(1) }}分</div>
-                                    <div class="score-indicator-marker"></div>
-                                </div>
-                            </div>
-                            <div class="score-bar-legend">
-                                <div class="legend-item">
-                                    <div class="legend-color" style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);"></div>
-                                    <span>健康 (0-2)</span>
-                                </div>
-                                <div class="legend-item">
-                                    <div class="legend-color" style="background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);"></div>
-                                    <span>轻度 (2-3)</span>
-                                </div>
-                                <div class="legend-item">
-                                    <div class="legend-color" style="background: linear-gradient(135deg, #e67e22 0%, #e74c3c 100%);"></div>
-                                    <span>中度 (3-4)</span>
-                                </div>
-                                <div class="legend-item">
-                                    <div class="legend-color" style="background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);"></div>
-                                    <span>重度 (4-5)</span>
-                                </div>
+                    <!-- 总分可视化 -->
+                    <div class="visualization-card">
+                        <div class="score-display">
+                            <div class="score-value">{{ result.totalScore }}</div>
+                            <div class="score-level" :class="getTotalScoreLevelClass(result.totalScore)">
+                                {{ getTotalScoreLevelText(result.totalScore) }}
                             </div>
                         </div>
 
-                        <div class="factor-description">
+                        <div class="gradient-progress-container">
+                            <div class="gradient-progress-bar">
+                                <div class="progress-segment segment-normal" style="width: 35.56%;">正常 (≤160)</div>
+                                <div class="progress-segment segment-mild" style="width: 13.33%;">轻度 (161-220)</div>
+                                <div class="progress-segment segment-moderate" style="width: 21.11%;">中度 (221-315)</div>
+                                <div class="progress-segment segment-severe" style="width: 30%;">重度 (≥315)</div>
+                                <div class="score-indicator" :style="{left: getTotalScorePosition(result.totalScore) + '%'}">
+                                    <div class="score-indicator-dot"></div>
+                                </div>
+                            </div>
+                            <div class="progress-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color-box" style="background: linear-gradient(90deg, #4CAF50 0%, #66BB6A 100%);"></div>
+                                    <span>正常 (≤160)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color-box" style="background: linear-gradient(90deg, #FFC107 0%, #FFD54F 100%);"></div>
+                                    <span>轻度 (161-220)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color-box" style="background: linear-gradient(90deg, #FF9800 0%, #FFB74D 100%);"></div>
+                                    <span>中度 (221-315)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color-box" style="background: linear-gradient(90deg, #D32F2F 0%, #E53935 100%);"></div>
+                                    <span>重度 (≥315)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="interpretation-text">
+                            {{ getTotalScoreInterpretation(result.totalScore) }}
+                        </div>
+                    </div>
+
+                    <!-- 阳性项目数可视化 -->
+                    <div class="visualization-card">
+                        <div class="score-display">
+                            <div class="score-value">{{ result.positiveItems }}/90</div>
+                            <div class="score-level" :class="result.positiveItems > 43 ? 'score-level-severe' : 'score-level-normal'">
+                                {{ result.positiveItems > 43 ? '阳性' : '正常' }}
+                            </div>
+                        </div>
+
+                        <div class="circular-progress-container">
+                            <div class="circular-progress">
+                                <svg width="200" height="200">
+                                    <defs>
+                                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#D32F2F;stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle class="circular-progress-bg" cx="100" cy="100" r="85"></circle>
+                                    <circle
+                                        class="circular-progress-bar"
+                                        cx="100"
+                                        cy="100"
+                                        r="85"
+                                        :stroke-dasharray="534"
+                                        :stroke-dashoffset="534 - (534 * result.positiveItems / 90)"
+                                    ></circle>
+                                </svg>
+                                <div class="circular-progress-text">
+                                    <div class="circular-progress-value">{{ result.positiveItems }}</div>
+                                    <div class="circular-progress-label">阳性项目数</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="progress-legend">
+                            <div class="legend-item">
+                                <div class="legend-color-box" style="background: #4CAF50;"></div>
+                                <span>正常 (≤43)</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color-box" style="background: #D32F2F;"></div>
+                                <span>阳性 (≥43)</span>
+                            </div>
+                        </div>
+
+                        <div class="interpretation-text">
+                            {{ getPositiveItemsInterpretation(result.positiveItems) }}
+                        </div>
+                    </div>
+
+                    <!-- 阳性症状均分可视化 -->
+                    <div class="visualization-card">
+                        <div class="score-display">
+                            <div class="score-value">{{ getPositiveAverage(result).toFixed(1) }}</div>
+                            <div class="score-level" :class="getPositiveAverageLevelClass(getPositiveAverage(result))">
+                                {{ getPositiveAverageLevelText(getPositiveAverage(result)) }}
+                            </div>
+                        </div>
+
+                        <div class="gradient-progress-container">
+                            <div class="gradient-progress-bar">
+                                <div class="progress-segment segment-normal" style="width: 30%;">正常 (≤1.5)</div>
+                                <div class="progress-segment segment-mild" style="width: 18%;">轻度 (1.5-2.4)</div>
+                                <div class="progress-segment segment-moderate" style="width: 20%;">中度 (2.5-3.4)</div>
+                                <div class="progress-segment segment-severe" style="width: 32%;">重度 (≥3.5)</div>
+                                <div class="score-indicator" :style="{left: getPositiveAveragePosition(getPositiveAverage(result)) + '%'}">
+                                    <div class="score-indicator-dot"></div>
+                                </div>
+                            </div>
+                            <div class="progress-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color-box" style="background: linear-gradient(90deg, #4CAF50 0%, #66BB6A 100%);"></div>
+                                    <span>正常 (≤1.5)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color-box" style="background: linear-gradient(90deg, #FFC107 0%, #FFD54F 100%);"></div>
+                                    <span>轻度 (1.5-2.4)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color-box" style="background: linear-gradient(90deg, #FF9800 0%, #FFB74D 100%);"></div>
+                                    <span>中度 (2.5-3.4)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color-box" style="background: linear-gradient(90deg, #D32F2F 0%, #E53935 100%);"></div>
+                                    <span>重度 (≥3.5)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="interpretation-text">
+                            {{ getPositiveAverageInterpretation(getPositiveAverage(result)) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. 因子详细分析区 -->
+                <div class="factor-detail-analysis">
+                    <h3 style="text-align: center; color: #333; font-size: 20px; margin-bottom: 20px;">因子详细分析</h3>
+
+                    <div v-for="(factor, name) in result.factors" :key="name" class="factor-analysis-card">
+                        <div class="factor-analysis-title">{{ name }}因子分析</div>
+                        <div class="factor-analysis-scores">
+                            <span>测评分: {{ factor.average.toFixed(2) }}</span>
+                            <span>总分: {{ factor.score }}</span>
+                        </div>
+                        <div class="factor-analysis-severity" :class="getFactorSeverityClass(factor.average)">
+                            {{ getFactorReferenceText(factor.average) }}
+                        </div>
+                        <div class="factor-analysis-description">
                             <strong>说明：</strong>{{ getFactorDescription(name) }}
                         </div>
-                        <div v-if="factor.average >= 2" class="factor-description" style="margin-top: 10px;">
+                        <div v-if="factor.average >= 2" style="margin-top: 10px;">
                             <strong>建议：</strong>
                             <ul style="margin-left: 20px; margin-top: 5px;">
                                 <li v-for="suggestion in getFactorSuggestions(name)" :key="suggestion">
@@ -1014,6 +1515,13 @@
                     </div>
                 </div>
 
+                <!-- 综合建议 -->
+                <div class="advice-section">
+                    <h3>💡 综合建议</h3>
+                    <p>{{ result.riskLevel.advice }}</p>
+                </div>
+
+                <!-- 分享区域 -->
                 <div class="share-section">
                     <h3 v-if="isTokenUser">📤 您的专属测试报告</h3>
                     <h3 v-else>📤 您的专属测试链接</h3>
@@ -1671,6 +2179,107 @@
                         精神病性: ['保持规律的作息', '避免使用精神活性物质', '建议寻求专业精神科医生的帮助']
                     };
                     return suggestions[factorName] || ['保持良好的生活习惯', '必要时寻求专业帮助'];
+                },
+
+                // 新增的辅助方法
+                getFactorReferenceClass(score) {
+                    if (score >= 4) return 'factor-reference-severe';
+                    if (score >= 3) return 'factor-reference-severe';
+                    if (score >= 2) return 'factor-reference-moderate';
+                    return 'factor-reference-normal';
+                },
+
+                getFactorReferenceText(score) {
+                    if (score >= 4) return '重度';
+                    if (score >= 3) return '重度';
+                    if (score >= 2) return '中度';
+                    return '正常';
+                },
+
+                getFactorSeverityClass(score) {
+                    if (score >= 4) return 'factor-analysis-severity';
+                    if (score >= 3) return 'factor-analysis-severity';
+                    return '';
+                },
+
+                getTotalScoreInterpretation(totalScore) {
+                    if (totalScore >= 315) {
+                        return '超出正常范围，表明存在广泛的心理症状，建议寻求专业心理咨询或治疗。';
+                    } else if (totalScore >= 220) {
+                        return '超出正常范围，表明存在一定的心理困扰，建议关注心理健康状况。';
+                    } else if (totalScore >= 160) {
+                        return '超出正常范围，表明存在轻微的心理困扰，建议适当进行自我调节。';
+                    } else {
+                        return '在正常范围内，心理状况总体良好。';
+                    }
+                },
+
+                getTotalScoreLevelClass(totalScore) {
+                    if (totalScore >= 315) return 'score-level-severe';
+                    if (totalScore >= 220) return 'score-level-moderate';
+                    if (totalScore >= 160) return 'score-level-mild';
+                    return 'score-level-normal';
+                },
+
+                getTotalScoreLevelText(totalScore) {
+                    if (totalScore >= 315) return '重度';
+                    if (totalScore >= 220) return '中度';
+                    if (totalScore >= 160) return '轻度';
+                    return '正常';
+                },
+
+                getTotalScorePosition(totalScore) {
+                    // 将总分映射到0-100的进度条位置
+                    const maxScore = 450;
+                    const minScore = 0;
+                    return ((totalScore - minScore) / (maxScore - minScore)) * 100;
+                },
+
+                getPositiveAverage(result) {
+                    if (result.positiveItems === 0) return 0;
+                    const positiveTotal = result.totalScore - (90 - result.positiveItems);
+                    return positiveTotal / result.positiveItems;
+                },
+
+                getPositiveItemsInterpretation(positiveItems) {
+                    if (positiveItems > 43) {
+                        return `您的阳性项目数（${positiveItems}项）超过正常范围（≤43项），表明存在广泛的症状表现，需要进行全面的心理评估和治疗。`;
+                    } else {
+                        return `您的阳性项目数（${positiveItems}项）在正常范围内（≤43项），心理状况总体良好。`;
+                    }
+                },
+
+                getPositiveAverageLevelClass(average) {
+                    if (average >= 3.5) return 'score-level-severe';
+                    if (average >= 2.5) return 'score-level-moderate';
+                    if (average >= 1.5) return 'score-level-mild';
+                    return 'score-level-normal';
+                },
+
+                getPositiveAverageLevelText(average) {
+                    if (average >= 3.5) return '重度';
+                    if (average >= 2.5) return '中度';
+                    if (average >= 1.5) return '轻度';
+                    return '正常';
+                },
+
+                getPositiveAveragePosition(average) {
+                    // 将阳性症状均分映射到0-100的进度条位置
+                    const maxAvg = 5;
+                    const minAvg = 0;
+                    return ((average - minAvg) / (maxAvg - minAvg)) * 100;
+                },
+
+                getPositiveAverageInterpretation(average) {
+                    if (average >= 3.5) {
+                        return `您的阳性症状均分（${average.toFixed(1)}）处于重度范围，表明症状表现较为严重，需要积极进行专业干预。`;
+                    } else if (average >= 2.5) {
+                        return `您的阳性症状均分（${average.toFixed(1)}）处于中度范围，表明存在一定的症状表现，建议寻求专业帮助。`;
+                    } else if (average >= 1.5) {
+                        return `您的阳性症状均分（${average.toFixed(1)}）处于轻度范围，症状表现较轻，可通过自我调节改善。`;
+                    } else {
+                        return `您的阳性症状均分（${average.toFixed(1)}）在正常范围内，症状表现轻微。`;
+                    }
                 }
             }
         }).mount('#app');
